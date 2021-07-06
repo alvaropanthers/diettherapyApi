@@ -9,7 +9,6 @@ from django.http import HttpResponse, JsonResponse
 
 @csrf_exempt
 def auth_user(request):
-    print("HITTTT")
     if request.method == 'POST':
         data = JSONParser().parse(request)
         try:

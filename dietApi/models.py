@@ -23,6 +23,13 @@ class QuestionOption(models.Model):
     createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(auto_now_add=True)
 
+class UserQuestion(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    questionOption = models.ForeignKey(QuestionOption, on_delete=models.CASCADE)
+    createdAt = models.DateTimeField(auto_now_add=True)
+    updatedAt = models.DateTimeField(auto_now_add=True)
+
 class Measurements(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     MAC = models.CharField(max_length=200)
