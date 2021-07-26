@@ -43,3 +43,16 @@ class Weight(models.Model):
     weight = models.FloatField()
     createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(auto_now_add=True)
+
+# class Activity(models.Model):
+#     name = models.CharField(max_length=200)
+#     createdAt = models.DateTimeField(auto_now_add=True)
+#     updatedAt = models.DateTimeField(auto_now_add=True)
+
+class PhysicalActivity(models.Model):
+    # activity = models.ForeignKey(Activity, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    activityType = models.CharField(max_length=200, default="hobbies")
+    activityName = models.CharField(max_length=400)
+    createdAt = models.DateTimeField(auto_now_add=True)
+    updatedAt = models.DateTimeField(auto_now_add=True)

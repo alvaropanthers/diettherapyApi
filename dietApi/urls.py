@@ -6,4 +6,5 @@ urlpatterns = [
     path('auth/', csrf_exempt(views.auth_user)),
     path('users/', csrf_exempt(views.UserList.as_view())),
     path('users/<int:pk>/', csrf_exempt(views.UserDetails.as_view())),
+    # path('physical/', csrf_exempt(views.physical_activity)),
 ]
