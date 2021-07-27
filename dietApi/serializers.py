@@ -5,6 +5,7 @@ class PhysicalActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model = PhysicalActivity
         fields = [
+            "id",
             "user_id",
             "activityType",
             "activityName",

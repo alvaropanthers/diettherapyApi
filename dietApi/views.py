@@ -31,24 +31,26 @@ class UserDetails(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserSerializer
 
 @csrf_exempt
-def physical_activity(request):
-    data = JSONParser().parse(request)
-
+def physical_activity(request, user_id=None):
     if request.method == 'POST':
+        data = JSONParser().parse(request)
         try:
             user = User.objects.get(pk=data['user_id'])
-            pa = PhysicalActivity(user=user, activityType=data['activityType'], activityName=data['activityName'])
+            pa = PhysicalActivity(user=user, activityType=data['activityType'].lower(), activityName=data['activityName'].lower())
             pa.save()
             return JsonResponse({"created": True}) 
         except Exception:
             return JsonResponse({"created": False})
     elif request.method == 'GET':
         try:
-            user = User.objects.get(pk=data['user_id'])
-            pa = PhysicalActivity.objects.get(user=user, activityType=data['activityType'].lower())
+            print('HANDLING GET REQUEST')
+            user = User.objects.get(pk=user_id)
+            print(user)
+            pa = PhysicalActivity.objects.filter(user=user)
+            print(pa)
             serializer = PhysicalActivitySerializer(pa, many=True)
-            return JsonResponse(serializer.data)
-        except Exception:
+            return JsonResponse(serializer.data, safe=False)
+        except Exception as e:
             return Http404()
 
 # class PhysicalActivity(generics.ListCreateAPIView):
