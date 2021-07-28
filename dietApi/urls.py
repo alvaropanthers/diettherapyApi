@@ -8,4 +8,5 @@ urlpatterns = [
     path('users/<int:pk>/', csrf_exempt(views.UserDetails.as_view())),
     path('physical/', csrf_exempt(views.physical_activity)),
     path('physical/<int:user_id>/', csrf_exempt(views.physical_activity)),
+    path('measurements/', csrf_exempt(views.measurements))
 ]

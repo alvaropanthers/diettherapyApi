@@ -1,7 +1,7 @@
 from django.http.response import Http404
 from django.shortcuts import render
 from rest_framework import HTTP_HEADER_ENCODING, generics
-from .models import User, PhysicalActivity
+from .models import User, PhysicalActivity, Measurements
 from .serializers import UserSerializer, PhysicalActivitySerializer
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication 
 from django.views.decorators.csrf import csrf_exempt
@@ -43,15 +43,41 @@ def physical_activity(request, user_id=None):
             return JsonResponse({"created": False})
     elif request.method == 'GET':
         try:
-            print('HANDLING GET REQUEST')
             user = User.objects.get(pk=user_id)
-            print(user)
-            pa = PhysicalActivity.objects.filter(user=user)
-            print(pa)
-            serializer = PhysicalActivitySerializer(pa, many=True)
-            return JsonResponse(serializer.data, safe=False)
+            hobbies = PhysicalActivity.objects.filter(user=user, activityType='hobbies')
+            favorite = PhysicalActivity.objects.filter(user=user, activityType='favorite')
+            events = PhysicalActivity.objects.filter(user=user, activityType='events')
+            bestActivities = PhysicalActivity.objects.filter(user=user, activityType='bestactivities')
+            # serializer = PhysicalActivitySerializer(pa, many=True)
+            hobbiesSerializer = PhysicalActivitySerializer(hobbies, many=True)
+            favoriteSerializer = PhysicalActivitySerializer(favorite, many=True)
+            eventSerializer = PhysicalActivitySerializer(events, many=True)
+            bestActivitiesSerializer = PhysicalActivitySerializer(bestActivities, many=True)
+            return JsonResponse({
+                "hobbies": hobbiesSerializer.data, 
+                "favorite": favoriteSerializer.data,
+                "event": eventSerializer.data,
+                "bestactivities": bestActivitiesSerializer.data
+            }, safe=False)
         except Exception as e:
             return Http404()
+
+@csrf_exempt
+def measurements(request, user_id=None):
+    if request.method == 'POST':
+        data = JSONParser().parse(request)
+        try:
+            user = User.objects.get(pk=data['user_id'])
+            m = Measurements(
+                user=user,
+                MAC=data['mac'],
+                WC=data['wc'],
+                HC=data['hc']
+            )
+            m.save()
+            return JsonResponse({"created": True}) 
+        except Exception:
+            return JsonResponse({"created": False})
 
 # class PhysicalActivity(generics.ListCreateAPIView):
 #     permission_classes = ()
