@@ -13,10 +13,17 @@ def auth_user(request):
     if request.method == 'POST':
         data = JSONParser().parse(request)
         try:
-            user = User.objects.get(email=data['email'], password=data['password'])
-            return JsonResponse({"authenticated": True, "id": user.id})
+            user = User.objects.get(email=data['email'])
+            if data['password'] == user.password:
+                print("Authenticated!")
+                userSerializer = UserSerializer(user)
+                return JsonResponse(userSerializer.data)
+
         except Exception:
-            return JsonResponse({"authenticated": False})
+            pass
+
+    return JsonResponse(None, safe=False)
+
 
 class UserList(generics.ListCreateAPIView):
     permission_classes = ()
